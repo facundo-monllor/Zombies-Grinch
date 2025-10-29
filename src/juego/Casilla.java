@@ -6,17 +6,19 @@ import entorno.Entorno;
 import entorno.Herramientas;
 
 public class Casilla {
-	private double x;
-	private int y;
-	private int ancho;
-	private int alto;
+	public int id;
+	public double x;
+	public int y;
+	public int ancho;
+	public int alto;
     private double angulo;
     private double escala;
-	private boolean estaOcupada;
-	private boolean tieneRegalo;
+	public boolean estaOcupada;
+	public boolean tieneRegalo;
     private Image imagenFondo;
 	
-	public Casilla(int x, int y, int ancho, int alto, boolean estaOcupada, boolean tieneRegalo, String imagenFondo) {
+	public Casilla(int id, int x, int y, int ancho, int alto, boolean estaOcupada, boolean tieneRegalo, String imagenFondo) {
+		this.id = id;
 		this.x = x;
 		this.y = y;
 		this.ancho = ancho;
@@ -33,9 +35,15 @@ public class Casilla {
 	}
 
 	public void dibujar(Entorno entorno){
-		// entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, this.tieneRegalo ? Color.PINK : this.colorFondo);
-		entorno.dibujarImagen(this.imagenFondo, this.x, this.y, this.angulo, this.escala);
-	}
-	
+        // entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, this.tieneRegalo ? Color.PINK : Color.PINK);
+        entorno.dibujarImagen(this.imagenFondo, this.x, this.y, this.angulo, this.escala);
 
+		
+		if (this.tieneRegalo) {
+			// int x, int y, int ancho, int alto, int hp, String imagenFondo
+			Regalo regalo = new Regalo(this.x, this.y, 40, 40, 1, "regalo.png");
+			regalo.dibujar(entorno);
+		}
+
+	}
 }

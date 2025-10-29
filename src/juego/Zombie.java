@@ -11,7 +11,7 @@ public class Zombie {
 	private int alto;
 	private double velocidad;
 	
-	public Zombie(int x, int y, int ancho, int alto, double velocidad) {
+	public Zombie(double x, int y, int ancho, int alto, double velocidad) {
 		this.x = x;
 		this.y = y;
 		this.ancho = ancho;
@@ -36,7 +36,7 @@ public class Zombie {
 	}
 	
 	public void dibujar(Entorno entorno){
-		entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, Color.GRAY);
+		entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, Color.YELLOW);
 	}
 	
 	public void mover(){

@@ -11,7 +11,7 @@ public class Planta {
 	private int alto;
 
 	
-	public Planta(int x, int y, int ancho, int alto) {
+	public Planta(double x, int y, int ancho, int alto) {
 		this.x = x;
 		this.y = y;
 		this.ancho = ancho;
