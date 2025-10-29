@@ -12,8 +12,6 @@ public class PlantaAvatar {
     public double y;
     public double initialY;
     public double initialX;
-	public double lastY;
-    public double lastX;
 
 	private int ancho;
 	private int alto;
@@ -37,8 +35,6 @@ public class PlantaAvatar {
 		this.y = y;
 		this.initialX = x;
 		this.initialY = y;
-		this.lastX = x;
-		this.lastY = y;
 
 		this.ancho = ancho;
 		this.alto = alto;

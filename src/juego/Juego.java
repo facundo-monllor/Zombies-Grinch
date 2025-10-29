@@ -26,6 +26,7 @@ public class Juego extends InterfaceJuego
     private int TiempoDeJuego = 0;
 	private Image backgroundImage = Herramientas.cargarImagen("Frontyard.jpg");
 
+
     Juego()
     {
         // Inicializa el objeto entorno
@@ -48,7 +49,7 @@ public class Juego extends InterfaceJuego
         // Creamos zombies
         this.zombies = new Zombie[5];
         for(int i = 0; i < this.zombies.length; i++){
-            this.zombies[i] = new Zombie(1360, 60 + 120*i, 60, 60, Math.random()+0.1);
+            this.zombies[i] = new Zombie(1360, 300 + 130*i, 60, 60, Math.random()+0.1);
         }
 
         // Creamos casillas
@@ -108,9 +109,11 @@ public class Juego extends InterfaceJuego
                 }
             }
 		}
+
+        //Primera colocación
 		for (int i=0; i < this.avataresPlantas.length; i++) {
             if(avataresPlantas[i] != null){
-                if(entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && avataresPlantas[i].seleccionada){
+                if(entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && avataresPlantas[i].seleccionada && !avataresPlantas[i].estaEnJuego){
 
                     boolean sobreCasilla = false;
                     for (Casilla casilla : casillasTablero) {
@@ -119,37 +122,77 @@ public class Juego extends InterfaceJuego
                             sobreCasilla = true;
                             avataresPlantas[i].x = casilla.x;
                             avataresPlantas[i].y = casilla.y;
-                            avataresPlantas[i].lastX = casilla.x;
-                            avataresPlantas[i].lastY = casilla.y;
                             casilla.estaOcupada = true;
 
-                            if(avataresPlantas[i].estaEnJuego == false){
-                                this.avataresPlantas[ContadorPlantas] = new PlantaAvatar(avataresPlantas[i].tipoPlanta == "RoseBlade" ? "RoseBlade" : "WallNut", avataresPlantas[i].tipoPlanta == "RoseBlade" ? 60 : 180, 60, 100, 100);
-                                ContadorPlantas++;
-                            }
+                            this.avataresPlantas[ContadorPlantas] = new PlantaAvatar(avataresPlantas[i].tipoPlanta == "RoseBlade" ? "RoseBlade" : "WallNut", avataresPlantas[i].tipoPlanta == "RoseBlade" ? 60 : 180, 60, 100, 100);
+                            ContadorPlantas++;
                             
-                            // Busco la casilla anterior y la establezco en desocupada
-                            for (Casilla casillaAnterior : casillasTablero) {
-                                if(avataresPlantas[i].casillaId == casillaAnterior.id){
-                                    casillaAnterior.estaOcupada = false;
-                                }
-                            }
-
                             avataresPlantas[i].estaEnJuego = true;
                             avataresPlantas[i].casillaId = casilla.id;
                             break;
                         }
                     }
 
-                    if (!sobreCasilla && !avataresPlantas[i].estaEnJuego) {
+                    if (!sobreCasilla) {
                         // Vuelve al inicio del avatar
                         avataresPlantas[i].x = avataresPlantas[i].initialX;
                         avataresPlantas[i].y = avataresPlantas[i].initialY;
                     }
-                    if (!sobreCasilla && avataresPlantas[i].estaEnJuego) {
-                        // Vuelve a la ultima casilla
-                        avataresPlantas[i].x = avataresPlantas[i].lastX;
-                        avataresPlantas[i].y = avataresPlantas[i].lastY;
+
+                    avataresPlantas[i].seleccionada = false;
+                }
+            }
+		}
+
+        // FLECHA ARRIBA MOVIMIENTO
+        for (int i=0; i < this.avataresPlantas.length; i++) {
+            if(avataresPlantas[i] != null){
+                if(entorno.sePresiono(entorno.TECLA_ARRIBA) && avataresPlantas[i].seleccionada){
+
+                    if (casillaDesdeFlechaArriba(avataresPlantas[i].casillaId)) {
+                        Casilla nuevaCas = this.casillasTablero[(avataresPlantas[i].casillaId)-9];
+
+                        avataresPlantas[i].x = nuevaCas.x;
+                        avataresPlantas[i].y = nuevaCas.y;
+                        nuevaCas.estaOcupada = true;
+
+                        // Busco la casilla anterior y la establezco en desocupada
+                        for (Casilla casillaAnterior : casillasTablero) {
+                            if(avataresPlantas[i].casillaId == casillaAnterior.id){
+                                casillaAnterior.estaOcupada = false;
+                            }
+                        }
+
+                        avataresPlantas[i].casillaId = nuevaCas.id;
+                        break;
+                    }
+
+                    avataresPlantas[i].seleccionada = false;
+                }
+            }
+		}
+
+        // FLECHA ABAJO MOVIMIENTO
+        for (int i=0; i < this.avataresPlantas.length; i++) {
+            if(avataresPlantas[i] != null){
+                if(entorno.sePresiono(entorno.TECLA_ABAJO) && avataresPlantas[i].seleccionada){
+
+                    if (casillaDesdeFlechaAbajo(avataresPlantas[i].casillaId)) {
+                        Casilla nuevaCas = this.casillasTablero[(avataresPlantas[i].casillaId)+9];
+
+                        avataresPlantas[i].x = nuevaCas.x;
+                        avataresPlantas[i].y = nuevaCas.y;
+                        nuevaCas.estaOcupada = true;
+
+                        // Busco la casilla anterior y la establezco en desocupada
+                        for (Casilla casillaAnterior : casillasTablero) {
+                            if(avataresPlantas[i].casillaId == casillaAnterior.id){
+                                casillaAnterior.estaOcupada = false;
+                            }
+                        }
+
+                        avataresPlantas[i].casillaId = nuevaCas.id;
+                        break;
                     }
 
                     avataresPlantas[i].seleccionada = false;
@@ -160,7 +203,7 @@ public class Juego extends InterfaceJuego
 
 		for (int i=0; i < this.avataresPlantas.length; i++) {
             if(avataresPlantas[i] != null){
-                if(entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && avataresPlantas[i].seleccionada && avataresPlantas[i].estaDisponible){
+                if(entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && avataresPlantas[i].seleccionada && avataresPlantas[i].estaDisponible && !avataresPlantas[i].estaEnJuego){
                     avataresPlantas[i].moverse(entorno.mouseX(), entorno.mouseY());
                 }
             }
@@ -169,8 +212,6 @@ public class Juego extends InterfaceJuego
         for (int i=0; i < this.avataresPlantas.length; i++) {
             if(avataresPlantas[i] != null){
                 avataresPlantas[i].counterTime += 1;
-                System.out.print("avataresPlantas[i].counterTime" + avataresPlantas[i].counterTime);
-                System.out.print("avataresPlantas[i].estaDisponible" + avataresPlantas[i].estaDisponible);
                 if(avataresPlantas[i].counterTime > 200 && !avataresPlantas[i].estaDisponible){
                     avataresPlantas[i].estaDisponible = true;
                 }
@@ -222,6 +263,30 @@ public class Juego extends InterfaceJuego
 
     public boolean cursorDentroDeCasilla(Casilla casilla, int mx, int my) {
         return (mx > casilla.x - casilla.ancho/2 && mx < casilla.x + casilla.ancho/2 && my > casilla.y - casilla.alto/2 && my < casilla.y + casilla.alto/2);
+    }
+
+    public boolean casillaDesdeFlechaArriba(int casillaId) {
+        if(casillaId < 9){
+            return false;
+        }
+        Casilla nuevaCasilla = this.casillasTablero[casillaId-9];
+        if(!nuevaCasilla.estaOcupada && !nuevaCasilla.tieneRegalo){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean casillaDesdeFlechaAbajo(int casillaId) {
+        if(casillaId > 35){
+            return false;
+        }
+        Casilla nuevaCasilla = this.casillasTablero[casillaId+9];
+        if(!nuevaCasilla.estaOcupada && !nuevaCasilla.tieneRegalo){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 
