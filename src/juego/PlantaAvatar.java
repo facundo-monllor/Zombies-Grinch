@@ -20,17 +20,22 @@ public class PlantaAvatar {
 
 	public int counterTime;
     public boolean estaDisponible;
-    boolean seleccionada;
-    boolean estaEnJuego;
+    public boolean seleccionada;
+    public boolean estaEnJuego;
 	
     public Image imagen;
     public Image imagenDesactivada;
     private Image imagenFondo;
-	
-	
+
+	public BolaDeFuego[] bolasDeFuego;
+	public int contadorBolasDeFuego;
+
+    public int counterLife;
+
 	public PlantaAvatar(String tipoPlanta, int x, int y, int ancho, int alto) {
 		this.casillaId = -1;
 		this.tipoPlanta = tipoPlanta;
+		
 		this.x = x;
 		this.y = y;
 		this.initialX = x;
@@ -49,6 +54,11 @@ public class PlantaAvatar {
         this.imagen = Herramientas.cargarImagen(tipoPlanta == "RoseBlade" ? "roseblade.jpg" : "wallnut.jpg");
         this.imagenDesactivada = Herramientas.cargarImagen(tipoPlanta == "RoseBlade" ? "rosebladeDesactivada.jpg" : "wallnutDesactivada.jpg");
         this.imagenFondo = Herramientas.cargarImagen("baseavatar.jpg");
+
+		this.bolasDeFuego = new BolaDeFuego[20];
+		this.contadorBolasDeFuego = 0;
+
+		this.counterLife = tipoPlanta == "RoseBlade" ? 50 : 100;
 	}
 
 	public boolean getEstaDisponible() {
@@ -73,5 +83,16 @@ public class PlantaAvatar {
         this.x = x;
         this.y = y;
     }
+
+	public void disparar(){
+		int randomOffset = (int) (Math.random() * 10) + 1;
+    	double nuevaY = this.y - 10 + randomOffset;
+
+        this.bolasDeFuego[contadorBolasDeFuego] = new BolaDeFuego(this.x, nuevaY, 15, 15, 3);
+		contadorBolasDeFuego++;
+		if(contadorBolasDeFuego  == 19){
+			contadorBolasDeFuego = 0;
+		}
+	}
 
 }
